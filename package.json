@@ -1,0 +1,31 @@
+{
+  "name": "aoc-template",
+  "version": "2.0.0",
+  "description": "🎄Advent of Code Template",
+  "main": "index.js",
+  "repository": "https://github.com/caiangums/aoc-template.git",
+  "author": "Ilê Caian <ile.caian@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "solve": "babel-node index.js",
+    "test": "jest --verbose",
+    "lint": "eslint src --fix",
+    "coverage": "jest --verbose --coverage",
+    "solution": "hygen solution new"
+  },
+  "dependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/node": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "babel-jest": "^27.3.1",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "eslint": "^8.3.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "hygen": "^6.1.0",
+    "jest": "^27.3.1",
+    "prettier": "^2.5.0",
+    "prettier-eslint": "^13.0.0"
+  }
+}
