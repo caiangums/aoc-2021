@@ -2,53 +2,59 @@ import { readFile } from '_utils/file'
 
 const toNumberArray = (arr) => arr.map((v) => parseInt(v))
 
-const BORN_FISH_TIMER = 8
-
-const MAX_FISH_TIMER = 6
-
-const MIN_FISH_TIMER = 0
-
 const PART_ONE_DAYS = 80
 
 const PART_TWO_DAYS = 256
 
+const DAYS = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+
+const STARTING_SEA = DAYS.reduce((acc, day) => acc.set(day, 0), new Map())
+
 const updateSea = ({ sea, days }) => {
-  let actualSea = Array.from(sea)
+  let actualSea = new Map(STARTING_SEA)
+
+  sea.forEach((fish) => {
+    const children = actualSea.get(fish)
+    actualSea.set(fish, children + 1)
+  })
 
   for (let i = 0; i < days; i += 1) {
-    let updatedSea = []
+    let newSea = new Map()
 
-    let newFishes = []
+    DAYS.forEach((day) => {
+      if (day === 0) {
+        // newborns
+        const children = actualSea.get(day)
+        newSea.set(8, children)
 
-    actualSea.forEach((fish) => {
-      if (fish === MIN_FISH_TIMER) {
-        updatedSea.push(MAX_FISH_TIMER)
-        newFishes.push(BORN_FISH_TIMER)
+        // starting pregnancy
+        newSea.set(6, children)
       } else {
-        updatedSea.push(fish - 1)
+        // passing days of pregnancy
+        const children = actualSea.get(day)
+        const updatedChildren = newSea.has(day - 1)
+          ? newSea.get(day - 1) + children
+          : children
+        newSea.set(day - 1, updatedChildren)
       }
     })
 
-    actualSea = [...updatedSea, ...newFishes]
+    actualSea = new Map(newSea)
   }
 
-  return actualSea.length
-
+  return DAYS.reduce((sum, day) => sum + actualSea.get(day), 0)
 }
 
 const solve = (line) => {
   let sea = toNumberArray(line.split(','))
 
-  const partOneSea = updateSea({ sea, days: PART_ONE_DAYS })
+  let partOneSea = updateSea({ sea, days: PART_ONE_DAYS })
 
   console.log('> result 1:', partOneSea)
 
-  /*
-  // TODO: do not use bruteforce, pls
   const partTwoSea = updateSea({ sea, days: PART_TWO_DAYS })
 
   console.log('> result 2:', partTwoSea)
-  */
 }
 
 export default () => {
