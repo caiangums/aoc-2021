@@ -2,7 +2,16 @@ import { readFile } from '_utils/file'
 
 const toNumberArray = (arr) => arr.map((v) => parseInt(v))
 
-const findSmallestFuelCost = (posCount) => {
+// the "best spot" is where more crabs are
+const findSmallestFuelCostPartOne = (crabsPos) => {
+  const posCount = crabsPos.reduce((acc, crab) => {
+    const crabCount = acc.has(crab) ? acc.get(crab) + 1 : 1
+
+    acc.set(crab, crabCount)
+
+    return acc
+  }, new Map())
+
   let finalResult = Number.MAX_SAFE_INTEGER
 
   for (let [actualCrab] of posCount) {
@@ -20,23 +29,43 @@ const findSmallestFuelCost = (posCount) => {
   return finalResult
 }
 
+const getFuelCost = ({ crabs, location }) =>
+  crabs.reduce((cost, crab) => {
+    const simpleCost = Math.abs(crab - location)
+    const crabCost = (simpleCost * (simpleCost + 1)) / 2
+
+    return cost + crabCost
+  }, 0)
+
+// brute force
+const findSmallestFuelCostPartTwo = (crabs) => {
+  const ordered = [...crabs].sort((a, b) => a - b)
+
+  const [min, max] = [ordered[0], ordered[ordered.length - 1]]
+  let target = min
+  let fuel = Number.MAX_SAFE_INTEGER
+
+  for (let i = min; i <= max; i += 1) {
+    let actualFuel = getFuelCost({ crabs: ordered, location: i })
+    if (actualFuel < fuel) {
+      fuel = actualFuel
+      target = i
+    }
+  }
+
+  return fuel
+}
+
 const solve = (line) => {
   const crabsPos = toNumberArray(line.split(','))
 
-  const posCount = crabsPos.reduce((acc, crab) => {
-    const crabCount = acc.has(crab) ? acc.get(crab) + 1 : 1
-
-    acc.set(crab, crabCount)
-
-    return acc
-  }, new Map())
-
-  let result = findSmallestFuelCost(posCount)
+  let result = findSmallestFuelCostPartOne(crabsPos)
 
   console.log('> result 1:', result)
 
-  // and the second part here
-  // console.log('> result 2:')
+  result = findSmallestFuelCostPartTwo(crabsPos)
+
+  console.log('> result 2:', result)
 }
 
 export default () => {
