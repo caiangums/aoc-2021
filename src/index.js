@@ -8,6 +8,7 @@ import solve06 from './06'
 import solve07 from './07'
 import solve08 from './08'
 import solve09 from './09'
+import solve10 from './10'
 // #import
 
 const solveAll = async () => {
@@ -21,6 +22,7 @@ const solveAll = async () => {
   await solve07()
   await solve08()
   await solve09()
+  await solve10()
   // #run
 }
 
