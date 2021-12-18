@@ -34,9 +34,9 @@ const isUpperCase = (str) => str === str.toUpperCase()
 
 const isOver = (pathes) => !pathes.some((path) => !path.includes(END))
 
-const getAllPathes = ({ graph, from = START }) => {
+const getAllPathes = (graph) => {
   let run = true
-  let actual = from
+  let actual = START
   let pathes = [[actual]]
 
   while (run) {
@@ -68,6 +68,49 @@ const getAllPathes = ({ graph, from = START }) => {
   return pathes
 }
 
+const hasUniqueSmallCavesOnly = (path) => {
+  const lowerCases = path.filter((cave) => !isUpperCase(cave))
+
+  return lowerCases.length === new Set(lowerCases).size
+}
+
+const getAllPathesWithRepetition = (graph) => {
+  let run = true
+  let actual = START
+  let pathes = [[actual]]
+
+  while (run) {
+    let newPathes = []
+
+    pathes.forEach((actualPath) => {
+      if (!actualPath.includes(END)) {
+        let options = graph.get(actualPath[actualPath.length - 1])
+
+        options.forEach((option) => {
+          if (isUpperCase(option)) {
+            newPathes.push([...actualPath, option])
+          } else {
+            if (
+              !actualPath.includes(option) ||
+              (option !== START && hasUniqueSmallCavesOnly(actualPath))
+            ) {
+              newPathes.push([...actualPath, option])
+            }
+          }
+        })
+      } else {
+        newPathes.push(actualPath)
+      }
+    })
+
+    pathes = newPathes
+
+    run = !isOver(pathes)
+  }
+
+  return pathes
+}
+
 const solve = (lines) => {
   const graph = Graph()
 
@@ -76,14 +119,17 @@ const solve = (lines) => {
     graph.add(from, to)
   })
 
-  const pathes = getAllPathes({ graph })
+  const pathes = getAllPathes(graph)
 
   let result = pathes.length
 
   console.log('> result 1:', result)
 
-  // and the second part here
-  // console.log('> result 2:')
+  const pathesWithRepetition = getAllPathesWithRepetition(graph)
+
+  result = pathesWithRepetition.length
+
+  console.log('> result 2:', result)
 }
 
 export default () => {
