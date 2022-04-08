@@ -11,6 +11,9 @@ import solve09 from './09'
 import solve10 from './10'
 import solve11 from './11'
 import solve12 from './12'
+import solve13 from './13'
+import solve14 from './14'
+import solve15 from './15'
 // #import
 
 const solveAll = async () => {
@@ -27,6 +30,9 @@ const solveAll = async () => {
   await solve10()
   await solve11()
   await solve12()
+  await solve13()
+  await solve14()
+  await solve15()
   // #run
 }
 
